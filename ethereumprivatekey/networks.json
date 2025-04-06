@@ -1,8 +1,0 @@
-{
-  "sepolia": {
-    "ethereumPrivatekey": {
-      "address": "0xa0B986AAe80b954242628537515a0615B177d3bB",
-      "startBlock": 8054009
-    }
-  }
-}
