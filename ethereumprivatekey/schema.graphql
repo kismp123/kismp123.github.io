@@ -1,0 +1,9 @@
+type privateKey @entity(immutable: true) {
+  id: Bytes!
+  _user: Bytes! # address
+  _privatekey: Bytes! # bytes32
+  _isUsed: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

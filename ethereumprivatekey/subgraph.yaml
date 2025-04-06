@@ -1,0 +1,26 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: ethereumPrivatekey
+    network: sepolia
+    source:
+      address: "0xa0B986AAe80b954242628537515a0615B177d3bB"
+      abi: ethereumPrivatekey
+      startBlock: 8054009
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - privateKey
+      abis:
+        - name: ethereumPrivatekey
+          file: ./abis/ethereumPrivatekey.json
+      eventHandlers:
+        - event: privateKey(address,bytes32,bool)
+          handler: handleprivateKey
+      file: ./src/ethereum-privatekey.ts

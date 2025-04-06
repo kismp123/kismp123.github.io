@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereum Account Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .truncate-text {
+            display: inline-block;
+            width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .copy-btn {
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            transform: scale(1.1);
+        }
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+        .status-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        .status-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #10B981;
+        }
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+        .disabled-btn {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Ethereum Account Manager</h1>
+        
+        <!-- Search and Filter Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+                <div class="flex-1">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search by Address or Private Key</label>
+                    <div class="relative">
+                        <input type="text" id="search" placeholder="Search..." 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <button id="searchBtn" class="absolute right-2 top-2 text-gray-500 hover:text-emerald-600">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Used Accounts Only</label>
+                        <label class="status-toggle">
+                            <input type="checkbox" id="usedAccountsToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <button id="fetchDataBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md transition-colors">
+                        <i class="fas fa-sync-alt mr-2"></i>Fetch Data
+                    </button>
+                </div>
+            </div>
+            <div class="text-sm text-gray-600 flex items-center">
+                <i class="fas fa-info-circle mr-2"></i>
+                <span>Click on address or private key to copy to clipboard. Used accounts are highlighted.</span>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Private Key</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nonce</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Activity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Table content will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-200">
+                <div class="flex-1 flex justify-between items-center">
+                    <button id="prevPageBtn" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled-btn">
+                        <i class="fas fa-chevron-left mr-2"></i> Previous
+                    </button>
+                    <span id="pageInfo" class="text-sm text-gray-700">Page 1</span>
+                    <button id="nextPageBtn" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Next <i class="fas fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let allAccounts = [];
+        let usedAccounts = [];
+    
+        let displayedAccounts = [];
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let totalPages = 1;
+        let isFetching = false;
+
+        // DOM elements
+        const tableBody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('search');
+        const searchBtn = document.getElementById('searchBtn');
+        const usedAccountsToggle = document.getElementById('usedAccountsToggle');
+        const fetchDataBtn = document.getElementById('fetchDataBtn');
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        const pageInfo = document.getElementById('pageInfo');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Disable previous button on first page
+            prevPageBtn.classList.add('disabled-btn');
+            prevPageBtn.disabled = true;
+
+            // Add event listeners
+            searchBtn.addEventListener('click', handleSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSearch();
+            });
+            usedAccountsToggle.addEventListener('change', filterUsedAccounts);
+            fetchDataBtn.addEventListener('click', fetchData);
+            prevPageBtn.addEventListener('click', goToPreviousPage);
+            nextPageBtn.addEventListener('click', goToNextPage);
+
+            // Initial fetch
+            fetchData();
+        });
+
+        // Format timestamp to relative time
+        function formatTimestamp(timestamp) {
+            const now = new Date();
+            const date = new Date(timestamp * 1000);
+            const seconds = Math.floor((now - date) / 1000);
+            
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) return `${interval} year${interval === 1 ? '' : 's'} ago`;
+            
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) return `${interval} month${interval === 1 ? '' : 's'} ago`;
+            
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) return `${interval} day${interval === 1 ? '' : 's'} ago`;
+            
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) return `${interval} hour${interval === 1 ? '' : 's'} ago`;
+            
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) return `${interval} minute${interval === 1 ? '' : 's'} ago`;
+            
+            return `${Math.floor(seconds)} second${seconds === 1 ? '' : 's'} ago`;
+        }
+
+        // Truncate text (show first and last few characters)
+        function truncateText(text, firstChars = 6, lastChars = 4) {
+            if (!text) return '';
+            if (text.length <= firstChars + lastChars) return text;
+            return `${text.substring(0, firstChars)}...${text.substring(text.length - lastChars)}`;
+        }
+
+        // Copy text to clipboard
+        function copyToClipboard(text, type) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show tooltip
+                const tooltip = document.createElement('div');
+                tooltip.className = 'absolute z-10 -mt-8 bg-gray-800 text-white text-xs rounded px-2 py-1';
+                tooltip.textContent = `${type} copied!`;
+                document.body.appendChild(tooltip);
+                
+                // Position tooltip near cursor
+                const mouseX = event.clientX;
+                const mouseY = event.clientY;
+                tooltip.style.left = `${mouseX - 30}px`;
+                tooltip.style.top = `${mouseY - 30}px`;
+                
+                // Remove tooltip after delay
+                setTimeout(() => {
+                    tooltip.remove();
+                }, 1000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Render table with accounts
+        function renderTable(accounts) {
+            tableBody.innerHTML = '';
+            
+            if (accounts.length === 0) {
+                const row = document.createElement('tr');
+                row.className = 'text-center py-4';
+                row.innerHTML = `
+                    <td colspan="7" class="px-6 py-4 text-gray-500">
+                        No accounts found. Try adjusting your search or fetch new data.
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, accounts.length);
+            const paginatedAccounts = accounts.slice(startIndex, endIndex);
+            
+            paginatedAccounts.forEach((account, index) => {
+                const row = document.createElement('tr');
+                row.className = account.isUsed ? 'bg-emerald-50' : 'hover:bg-gray-50';
+                
+                const addressTruncated = truncateText(account.address);
+                const privateKeyTruncated = truncateText(account.privateKey);
+                
+                const balanceText = account.balance !== undefined ? 
+                    `${account.balance} ETH` : 
+                    '<span class="text-red-500">Failed</span>';
+                
+                const nonceText = account.nonce !== undefined ? 
+                    account.nonce : 
+                    '<span class="text-red-500">Failed</span>';
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${startIndex + index + 1}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <div class="flex items-center">
+                            <span class="truncate-text">${addressTruncated}</span>
+                            <button onclick="copyToClipboard('${account.address}', 'Address')" class="copy-btn ml-2 text-gray-400 hover:text-emerald-600">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <span class="truncate-text">${privateKeyTruncated}</span>
+                            <button onclick="copyToClipboard('${account.privateKey}', 'Private Key')" class="copy-btn ml-2 text-gray-400 hover:text-emerald-600">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${account.isUsed ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-800'}">
+                            ${account.isUsed ? 'Used' : 'Unused'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${balanceText}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${nonceText}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${account.timestamp ? formatTimestamp(account.timestamp) : 'N/A'}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Update pagination info
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            
+            // Update pagination buttons
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages || endIndex >= accounts.length;
+            
+            if (prevPageBtn.disabled) {
+                prevPageBtn.classList.add('disabled-btn');
+            } else {
+                prevPageBtn.classList.remove('disabled-btn');
+            }
+            
+            if (nextPageBtn.disabled) {
+                nextPageBtn.classList.add('disabled-btn');
+            } else {
+                nextPageBtn.classList.remove('disabled-btn');
+            }
+        }
+
+        // Handle search
+        function handleSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            // Reset to first page
+            currentPage = 1;
+            if (!searchTerm) {
+                displayedAccounts = [...allAccounts];
+            } else {
+                displayedAccounts = request(currentPage, usedOnly, searchTerm)
+            }
+            totalPages = Math.ceil(displayedAccounts.length / itemsPerPage);
+            renderTable(displayedAccounts);
+        }
+
+        // Filter used accounts
+        function filterUsedAccounts() {
+            // Reset to first page
+            currentPage = 1;
+    
+            if (usedAccountsToggle.checked) {
+                request(currentPage, usedOnly, serachTerm)
+                displayedAccounts = [...usedAccounts]
+            } else {
+                displayedAccounts = [...allAccounts];
+            }
+            
+            totalPages = Math.ceil(displayedAccounts.length / itemsPerPage);
+            renderTable(displayedAccounts);
+        }
+
+        // Pagination functions
+        function goToPreviousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                request(currentPage, usedOnly, serachTerm)
+                if( usedOnly == true ){
+                    displayedAccounts = [...usedAccounts]    
+                }else{
+                    displayedAccounts = [...allAccounts]
+                }
+                renderTable(displayedAccounts);
+            }
+        }
+
+        function goToNextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                request(currentPage, usedOnly, serachTerm)
+                if( usedOnly == true ){
+                    displayedAccounts = [...usedAccounts]    
+                }else{
+                    displayedAccounts = [...allAccounts]
+                }
+                renderTable(displayedAccounts);
+            }
+        }
+
+        // Mock API request function (replace with actual API call)
+        async function fetchData() {
+            if (isFetching) return;
+            
+            isFetching = true;
+            fetchDataBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Fetching...';
+            fetchDataBtn.disabled = true;
+            
+            try {
+                // Simulate API delay
+                // await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Store in global variable
+                allAccounts = request(0);
+                displayedAccounts = [...allAccounts];
+                
+                // Calculate total pages
+                totalPages = Math.ceil(displayedAccounts.length / itemsPerPage);
+                
+                // Reset to first page
+                currentPage = 1;
+                
+                // Render table
+                renderTable(displayedAccounts);
+                
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                alert('Failed to fetch data. Please try again.');
+            } finally {
+                isFetching = false;
+                fetchDataBtn.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> Fetch Data';
+                fetchDataBtn.disabled = false;
+            }
+        }
+
+        function request(currentPage, usedOnly=false, search=''){
+            if( usedOnly == true && (currentPage-1)*20 <= usedAccounts.length){
+                return;
+            }else if(usedOnly == false && (currentPage-1)*20 <= allAccounts.length){
+                return;
+            }
+            // GraphQL endpoint URL (The Graph's subgraph URL)
+            const url = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
+
+            // GraphQL 쿼리
+            const query = `
+            {
+                tokens {
+                id
+                symbol
+                name
+                }
+            }
+            `;
+
+            // 요청 보내기
+            fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data from The Graph:', data);
+            })
+            .catch(error => {
+                console.error('Error fetching data from The Graph:', error);
+            });
+        }
+
+        // Make functions available globally for event handlers
+        window.copyToClipboard = copyToClipboard;
+    </script>
+</body>
+</html>
