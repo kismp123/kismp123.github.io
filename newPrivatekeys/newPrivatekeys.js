@@ -109,8 +109,15 @@ async function sendTransactionFromStoredKeys() {
         }
         console.error("에러 발생:", error);
     }
-    if( result != null ) prevGasPrice = prevGasPrice * 70n / 100n
-    else prevGasPrice = prevGasPrice * 120n / 100n
+    if( result != null ){
+        prevGasPrice = prevGasPrice * 70n / 100n
+        if( prevGasPrice < BigInt(0.001 * 1e9) ) prevGasPrice = BigInt(0.001 * 1e9)
+    }
+    else{
+        prevGasPrice = prevGasPrice * 120n / 100n
+        if( prevGasPrice > BigInt(1e9)) prevGasPrice = BigInt(1e9)
+        console.log('should increase gas price', prevGasPrice)
+    }
     executing = false
 }
 // Function to send a transaction
@@ -123,19 +130,18 @@ async function sendTransaction(users, privateKeys, initialized) {
         nonce: nonce
     });
 
-    let result = null
-   for(let i=0; i<30; i++){
-       result = await waitForTransactionReceipt(tx.hash);
-       if( result != null ) break
-   }
-   return result
+    return await waitForTransactionReceipt(tx.hash);
 }
 
 // Function to wait for a transaction receipt
-async function waitForTransactionReceipt(txHash, timeout = 60 * 1, pollInterval = 30) {
+async function waitForTransactionReceipt(txHash, timeout = 60*30, pollInterval = 30) {
     const startTime = Date.now();
     while (true) {
         await new Promise((resolve) => setTimeout(resolve, pollInterval * 1000));
+        if (Date.now() - startTime > timeout * 1000) {
+            console.log("Timeout reached. Transaction was not included in a block.");
+            return null;
+        }
 
         try {
             const receipt = await provider.getTransactionReceipt(txHash);
@@ -148,10 +154,6 @@ async function waitForTransactionReceipt(txHash, timeout = 60 * 1, pollInterval 
                 return receipt;
             }
         } catch (err) {
-            if (Date.now() - startTime > timeout * 1000) {
-                console.log("Timeout reached. Transaction was not included in a block.");
-                return null;
-            }
             continue;
         }
     }
