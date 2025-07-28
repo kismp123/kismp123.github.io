@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E4PCM4RZWE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-E4PCM4RZWE');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Smart Contracts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .contract-address {
+            font-family: monospace;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .truncate-address {
+            display: inline-block;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        @media (min-width: 640px) {
+            .truncate-address {
+                max-width: 200px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .truncate-address {
+                max-width: none;
+            }
+        }
+        .toggle-switch {
+            width: 48px;
+            height: 24px;
+            background-color: #d1d5db; /* gray-300 */
+            border-radius: 9999px;
+            position: relative;
+            transition: background-color 0.3s;
+            padding: 0;
+        }
+
+        .toggle-switch .dot {
+            height: 24px;
+            width: 24px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.3s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active {
+            background-color: #3b82f6; /* blue-500 */
+        }
+
+        .toggle-switch.active .dot {
+            transform: translateX(24px);
+        }
+    </style>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WCWG4KF7');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WCWG4KF7"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-bold text-gray-800">
+                    <i class="fas fa-file-contract text-blue-500 mr-2"></i>
+                    Recent Smart Contracts
+                </h1>
+            </div>
+            <p class="text-gray-600 mt-2">List of recently deployed smart contracts on the blockchain</p>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex justify-between">
+                    <div>
+                        <p class="text-gray-500">Total Contracts</p>
+                        <h3 class="text-2xl font-bold text-gray-800" id="totalContracts">0</h3>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full text-blue-500">
+                        <i class="fas fa-file-alt text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex justify-between">
+                    <div>
+                        <p class="text-gray-500">Today's Deployments</p>
+                        <h3 class="text-2xl font-bold text-gray-800" id="todayDeployments">0</h3>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full text-green-500">
+                        <i class="fas fa-calendar-day text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex justify-between">
+                    <div>
+                        <p class="text-gray-500">Unique Creators</p>
+                        <h3 class="text-2xl font-bold text-gray-800" id="uniqueCreators">0</h3>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full text-purple-500">
+                        <i class="fas fa-users text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Selector -->
+        <div class="flex items-center space-x-2">
+        <button data-network="ethereum" class="network-btn px-3 py-1 rounded-lg bg-blue-500 text-white text-sm font-medium shadow">
+            Ethereum
+        </button>
+        <button data-network="binance" class="network-btn px-3 py-1 rounded-lg text-sm font-medium shadow">
+            Binance
+        </button>
+        <button data-network="optimism" class="network-btn px-3 py-1 rounded-lg text-sm font-medium shadow">
+            Optimism
+        </button>
+        <button data-network="base" class="network-btn px-3 py-1 rounded-lg text-sm font-medium shadow">
+            Base
+        </button>
+        <button data-network="arbitrum" class="network-btn px-3 py-1 rounded-lg text-sm font-medium shadow">
+            Arbitrum
+        </button>
+        <button data-network="polygon" class="network-btn px-3 py-1 rounded-lg text-sm font-medium shadow">
+            Polygon
+        </button>
+        </div>
+
+        <!-- Filter Toggle Buttons -->
+        <div class="flex justify-end mb-4 space-x-4">
+            <!-- Hide Unnamed Toggle -->
+            <div class="flex items-center space-x-2">
+                <label class="text-gray-700 font-medium">Hide Unnamed</label>
+                <button id="hideUnnamedBtn" class="toggle-switch">
+                    <span class="dot"></span>
+                </button>
+            </div>
+
+            <!-- Remove Duplicates Toggle -->
+            <div class="flex items-center space-x-2">
+                <label class="text-gray-700 font-medium">Remove Duplicates</label>
+                <button id="removeDuplicateBtn" class="toggle-switch">
+                    <span class="dot"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contracts Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <div class="flex items-center">
+                                    <span>Contract Address</span>
+                                    <button class="ml-1 text-gray-400 hover:text-gray-600" onclick="sortByColumn('address')">
+                                        <i id="sortIcon_address" class="fas fa-sort text-gray-400"></i>
+                                    </button>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <div class="flex items-center">
+                                    <span>Contract Name</span>
+                                    <button class="ml-1 text-gray-400 hover:text-gray-600" onclick="sortByColumn('contract_name')">
+                                        <i id="sortIcon_contract_name" class="fas fa-sort text-gray-400"></i>
+                                    </button>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <div class="flex items-center">
+                                    <span>Deployment Time</span>
+                                    <button class="ml-1 text-gray-400 hover:text-gray-600" onclick="sortByColumn('deployed')">
+                                        <i id="sortIcon_deployed" class="fas fa-sort text-gray-400"></i>
+                                    </button>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <div class="flex items-center">
+                                <span>First Seen</span>
+                                <button class="ml-1 text-gray-400 hover:text-gray-600" onclick="sortByColumn('first_seen')">
+                                    <i id="sortIcon_first_seen" class="fas fa-sort text-gray-400"></i>
+                                </button>
+                            </div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <!-- 아래를 contractsTableBody 바깥, 테이블 하단에 추가 -->
+
+                    <tbody class="bg-white divide-y divide-gray-200" id="contractsTableBody">
+                        <!-- Loading state -->
+                        <tr id="loadingRow">
+                            <td colspan="4" class="px-6 py-8 text-center">
+                                <div class="flex justify-center items-center space-x-2">
+                                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                                    <span class="text-gray-600">Loading smart contracts...</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <div class="px-6 py-4 flex justify-center border-t bg-white" id="paginationButtonsBottom">
+                    </div>
+                </table>
+                <div class="px-6 py-4 flex justify-center border-t bg-white" id="paginationButtons">
+                </div>
+            </div>
+
+    </div>
+
+    <script>
+        let currentNetwork = 'ethereum';
+        let currentPage = 1;
+        let networkDataCache = {};
+
+        let hideUnnamed = false;
+        let removeDuplicates = false;
+        let sortState = {
+            key: null,
+            ascending: true
+        };
+        document.addEventListener('DOMContentLoaded', async function () {
+            await fetchContracts(currentNetwork);
+            
+            // 네트워크 버튼 클릭 처리
+            const networkButtons = document.querySelectorAll('.network-btn');
+            networkButtons.forEach((btn) => {
+                btn.addEventListener('click', async () => {
+                    currentPage = 1;
+                    hideUnnamed = false;
+                    removeDuplicates = false;
+                    document.getElementById('hideUnnamedBtn').classList.remove('active');
+                    document.getElementById('removeDuplicateBtn').classList.remove('active');
+
+                    const selected = btn.getAttribute('data-network');
+                    if (selected === currentNetwork) return;
+
+                    currentNetwork = selected;
+
+                    // 스타일 업데이트
+                    networkButtons.forEach(b => b.classList.remove('bg-blue-500', 'text-white'));
+                    btn.classList.add('bg-blue-500', 'text-white');
+
+                    // 다시 불러오기
+                    await fetchContracts(currentNetwork);
+                });
+            });
+        });
+
+        document.addEventListener('click', function (e) {
+            const target = e.target.closest('.view-on-etherscan-btn');
+            if (target) {
+                const url = target.getAttribute('data-url');
+                if (url) {
+                    window.open(url, '_blank');
+                }
+            }
+        });
+        
+
+        const server = 'http://223.130.137.20:3000'
+        async function fetchAddress(network = 'ethereum') {
+            if (networkDataCache[network]) {
+                return networkDataCache[network];
+            }
+    
+            try {
+                const response = await fetch(server+`/getAddress?network=${network}`);
+                if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                networkDataCache[network] = data.result;
+                const result = data.result
+                return result
+            } catch (error) {
+                return null;
+            }
+        }
+        let filteredContracts = [];
+        let tableBody
+        const PAGE_SIZE = 100;
+        
+        document.getElementById('hideUnnamedBtn').addEventListener('click', () => {
+            hideUnnamed = !hideUnnamed;
+            document.getElementById('hideUnnamedBtn').classList.toggle('active', hideUnnamed);
+            applyFilters();
+            currentPage = 1;
+            renderTablePage(currentPage);
+            renderPagination();
+        });
+
+        document.getElementById('removeDuplicateBtn').addEventListener('click', () => {
+            removeDuplicates = !removeDuplicates;
+            document.getElementById('removeDuplicateBtn').classList.toggle('active', removeDuplicates);
+            applyFilters();
+            currentPage = 1;
+            renderTablePage(currentPage);
+            renderPagination();
+        });
+        // let hideUnnamed = false;
+        // let removeDuplicates = false;
+        let loadingRow;
+        let pagination;
+        let paginationBottom;
+        let contracts;
+        async function fetchContracts(network = 'ethereum') {
+            loadingRow = document.getElementById('loadingRow');
+            tableBody = document.getElementById('contractsTableBody');
+            pagination = document.getElementById('paginationButtons');
+            paginationBottom = document.getElementById('paginationButtonsBottom');
+
+            // Show loading if element exists
+            if (loadingRow) {
+                loadingRow.style.display = '';
+                tableBody.innerHTML = '';
+                tableBody.appendChild(loadingRow);
+            }
+
+            pagination.innerHTML = '';
+            paginationBottom.innerHTML = '';
+
+            contracts = await fetchAddress(network);
+            applyFilters();
+
+            if (loadingRow) loadingRow.style.display = 'none';
+            renderTablePage(currentPage);
+            renderPagination();
+
+        }
+
+        function applyFilters() {
+            filteredContracts = [...contracts];
+
+            if (hideUnnamed) {
+                filteredContracts = filteredContracts.filter(c => c.contract_name && c.contract_name.trim() !== "");
+            }
+
+            if (removeDuplicates) {
+                const seen = new Set();
+                filteredContracts = filteredContracts.filter(c => {
+                    const name = c.contract_name;
+                    if (seen.has(name)) return false;
+                    seen.add(name);
+                    return true;
+                });
+            }
+        }
+        function createPaginationButton(i) {
+            const btn = document.createElement('button');
+
+            // ⭐ currentPage를 정확히 비교해 스타일 적용
+            btn.className = `px-4 py-2 mx-1 border rounded ${
+                i === currentPage ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100'
+            }`;
+
+            btn.textContent = i;
+
+            btn.addEventListener('click', () => {
+                if (currentPage === i) return; // 이미 선택된 버튼이면 무시
+                currentPage = i;
+                renderTablePage(currentPage);
+                renderPagination();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            return btn;
+        }
+    
+        function renderTablePage(page) {
+            tableBody.innerHTML = '';
+            const start = (page - 1) * PAGE_SIZE;
+            const end = page * PAGE_SIZE;
+            const currentData = filteredContracts.slice(start, end);
+
+            currentData.forEach((contract, index) => {
+                const row = document.createElement('tr');
+                row.className = `fade-in hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`;
+                row.style.animationDelay = `${index * 0.01}s`;
+
+                const deploymentTime = new Date(contract.deployed * 1000);
+                const formattedTime = deploymentTime.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZoneName: 'short'
+                });
+
+                let url
+                if( currentNetwork == 'ethereum') url = 'https://etherscan.io/address/'
+                else if( currentNetwork == 'binance' ) url = 'https://bscscan.com/address/'
+                else if( currentNetwork == 'optimism' ) url = 'https://optimistic.etherscan.io/address/'
+                else if( currentNetwork == 'base') url = 'https://basescan.org/address/'
+                else if( currentNetwork == 'arbitrum') url = 'https://arbiscan.io/address/'
+                else if( currentNetwork == 'polygon' ) url = 'https://polygonscan.com/address/'
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-file-contract text-blue-500"></i>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900 contract-address">
+                                    <span class="truncate-address" title="${contract.address}">${contract.address}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${contract.contract_name}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${timeAgo(deploymentTime)}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ${timeAgo(contract.first_seen * 1000)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="view-on-etherscan-btn text-blue-600 hover:text-blue-900 mr-3" data-url="
+                        ${url+contract.address}" title="View on Etherscan">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+                    </td>
+
+                `;
+                tableBody.appendChild(row);
+            });
+
+            updateStats(filteredContracts);
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredContracts.length / PAGE_SIZE);
+            pagination.innerHTML = '';
+            paginationBottom.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const topBtn = createPaginationButton(i);
+                const bottomBtn = createPaginationButton(i);
+                pagination.appendChild(topBtn);
+                paginationBottom.appendChild(bottomBtn);
+            }
+        }
+        function sortByColumn(columnKey) {
+            // 정렬 순서 토글 또는 새 정렬 키 설정
+            if (sortState.key === columnKey) {
+                sortState.ascending = !sortState.ascending;
+            } else {
+                sortState.key = columnKey;
+                sortState.ascending = true;
+            }
+
+            filteredContracts.sort((a, b) => {
+                const aVal = a[columnKey] || '';
+                const bVal = b[columnKey] || '';
+
+                if (typeof aVal === 'number' && typeof bVal === 'number') {
+                    return sortState.ascending ? aVal - bVal : bVal - aVal;
+                } else {
+                    return sortState.ascending
+                        ? aVal.toString().localeCompare(bVal.toString())
+                        : bVal.toString().localeCompare(aVal.toString());
+                }
+            });
+
+            updateSortIcons(); // 아이콘 업데이트
+            renderTablePage(currentPage);
+            renderPagination();
+        }
+    
+        function updateSortIcons() {
+            const columns = ['address', 'contract_name', 'deployed', 'first_seen'];
+            columns.forEach(col => {
+                const icon = document.getElementById(`sortIcon_${col}`);
+                if (!icon) return;
+
+                if (sortState.key === col) {
+                    icon.className = sortState.ascending ? 'fas fa-sort-up' : 'fas fa-sort-down';
+                } else {
+                    icon.className = 'fas fa-sort text-gray-400';
+                }
+            });
+        }
+        function updateStats(contracts) {
+            let oldCount = 0;
+            const contractNameSet = new Set();
+
+            contracts.forEach(contract => {
+                const deployedDate = new Date(contract.deployed * 1000); // UNIX timestamp → JS Date
+                const ago = timeAgo(deployedDate);
+
+                // "1 day ago"보다 오래된 경우만 count
+                if ( ago.includes("hours ago")) {
+                    oldCount++;
+                }
+
+                if (contract.contract_name) {
+                    contractNameSet.add(contract.contract_name);
+                }
+            });
+
+            document.getElementById('totalContracts').textContent = contracts.length;
+            document.getElementById('todayDeployments').textContent = oldCount;
+            document.getElementById('uniqueCreators').textContent = contractNameSet.size;
+        }
+
+        function timeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) return interval + " year" + (interval === 1 ? "" : "s") + " ago";
+            
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) return interval + " month" + (interval === 1 ? "" : "s") + " ago";
+            
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
+            
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
+            
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
+            
+            return Math.floor(seconds) + " second" + (seconds === 1 ? "" : "s") + " ago";
+        }
+    </script>
+
+</body>
+</html>
