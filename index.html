@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E4PCM4RZWE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-E4PCM4RZWE');
-</script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4PCM4RZWE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      gtag('config', 'G-E4PCM4RZWE');
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recent Smart Contracts</title>
+    <title>BugChain.xyz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -52,7 +53,7 @@
             transition: background-color 0.3s;
             padding: 0;
         }
-
+        
         .toggle-switch .dot {
             height: 24px;
             width: 24px;
@@ -64,13 +65,47 @@
             transition: transform 0.3s;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
-
+        
         .toggle-switch.active {
             background-color: #3b82f6; /* blue-500 */
         }
-
+        
         .toggle-switch.active .dot {
             transform: translateX(24px);
+        }
+        
+        /* Navigation buttons styles */
+        .nav-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3b82f6;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-btn.active {
+            color: #3b82f6;
+        }
+        
+        .nav-btn.active::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .nav-btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
         }
     </style>
     <!-- Google Tag Manager -->
@@ -90,16 +125,33 @@
         <!-- Header -->
         <header class="mb-8">
             <div class="flex justify-between items-center">
-                <h1 class="text-3xl font-bold text-gray-800">
-                    <i class="fas fa-file-contract text-blue-500 mr-2"></i>
-                    Recent Smart Contracts
-                </h1>
+                <div class="flex items-end space-x-2">
+                    <h1 class="text-3xl font-bold text-gray-800">
+                        <i class="fas fa-bug text-blue-500 mr-2"></i>
+                        bugchain.xyz
+                    </h1>
+                    <span class="text-xs font-medium bg-blue-100 text-blue-600 px-2 py-1 rounded-md mb-1">
+                        Smart Contract Explorer
+                    </span>
+                </div>
             </div>
-            <p class="text-gray-600 mt-2">List of recently deployed smart contracts on the blockchain</p>
+            <p class="text-gray-600 mt-2">Track, analyze and debug smart contracts across multiple chains</p>
+            
+            <!-- Navigation Buttons -->
+            <div class="flex space-x-6 mt-6 border-b border-gray-200 pb-2">
+                <button id="recentlyContractBtn" class="nav-btn active text-lg font-medium text-gray-800 px-1 py-2">
+                    <i class="fas fa-file-contract mr-2"></i>
+                    Recently Contract
+                </button>
+                <button id="bridgesBtn" class="nav-btn text-lg font-medium text-gray-500 hover:text-gray-800 px-1 py-2">
+                    <i class="fas fa-bridge mr-2"></i>
+                    Bridges
+                </button>
+            </div>
         </header>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div id="statsCards" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex justify-between">
                     <div>
@@ -220,7 +272,7 @@
                         </tr>
                     </thead>
                     <!-- 아래를 contractsTableBody 바깥, 테이블 하단에 추가 -->
-
+                    
                     <tbody class="bg-white divide-y divide-gray-200" id="contractsTableBody">
                         <!-- Loading state -->
                         <tr id="loadingRow">
@@ -239,13 +291,14 @@
                 <div class="px-6 py-4 flex justify-center border-t bg-white" id="paginationButtons">
                 </div>
             </div>
+     </div>
 
-    </div>
-
-    <script>
+     <script>
         let currentNetwork = 'ethereum';
         let currentPage = 1;
         let networkDataCache = {};
+        let bridges = [];
+        let activeView = 'contracts'; // 'contracts' or 'bridges'
 
         let hideUnnamed = false;
         let removeDuplicates = false;
@@ -256,6 +309,60 @@
         document.addEventListener('DOMContentLoaded', async function () {
             await fetchContracts(currentNetwork);
             
+            // Navigation buttons functionality
+            const recentlyContractBtn = document.getElementById('recentlyContractBtn');
+            const bridgesBtn = document.getElementById('bridgesBtn');
+            
+            recentlyContractBtn.addEventListener('click', () => {
+                // Reset to initial state
+                recentlyContractBtn.classList.add('active');
+                recentlyContractBtn.classList.remove('text-gray-500');
+                recentlyContractBtn.classList.add('text-gray-800');
+                
+                bridgesBtn.classList.remove('active');
+                bridgesBtn.classList.remove('text-gray-800');
+                bridgesBtn.classList.add('text-gray-500');
+                
+                // Reset filters and sorting
+                hideUnnamed = false;
+                removeDuplicates = false;
+                document.getElementById('hideUnnamedBtn').classList.remove('active');
+                document.getElementById('removeDuplicateBtn').classList.remove('active');
+                sortState = { key: null, ascending: true };
+                updateSortIcons();
+                
+                // Reset to first page and first network
+                currentPage = 1;
+                currentNetwork = 'ethereum';
+                
+                // Update network buttons
+                document.querySelectorAll('.network-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-500', 'text-white');
+                    if (btn.getAttribute('data-network') === 'ethereum') {
+                        btn.classList.add('bg-blue-500', 'text-white');
+                    }
+                });
+                
+                activeView = 'contracts';
+                document.getElementById('statsCards').classList.remove('hidden');
+                // Reload contracts
+                fetchContracts('ethereum');
+            });
+            
+            bridgesBtn.addEventListener('click', async () => {
+                bridgesBtn.classList.add('active');
+                bridgesBtn.classList.remove('text-gray-500');
+                bridgesBtn.classList.add('text-gray-800');
+                
+                recentlyContractBtn.classList.remove('active');
+                recentlyContractBtn.classList.remove('text-gray-800');
+                recentlyContractBtn.classList.add('text-gray-500');
+                
+                activeView = 'bridges';
+                document.getElementById('statsCards').classList.add('hidden');
+                await fetchBridges(currentNetwork);
+            });
+
             // 네트워크 버튼 클릭 처리
             const networkButtons = document.querySelectorAll('.network-btn');
             networkButtons.forEach((btn) => {
@@ -276,7 +383,11 @@
                     btn.classList.add('bg-blue-500', 'text-white');
 
                     // 다시 불러오기
-                    await fetchContracts(currentNetwork);
+                    if (activeView === 'contracts') {
+                        await fetchContracts(currentNetwork);
+                    } else {
+                        await fetchBridges(currentNetwork);
+                    }
                 });
             });
         });
@@ -291,13 +402,12 @@
             }
         });
         
-
         const server = 'https://api.bugchain.xyz'
         async function fetchAddress(network = 'ethereum') {
             if (networkDataCache[network]) {
                 return networkDataCache[network];
             }
-    
+            
             try {
                 const response = await fetch(server+`/getAddress?network=${network}`);
                 if (!response.ok) {
@@ -312,6 +422,7 @@
             }
         }
         let filteredContracts = [];
+        let filteredBridges = [];
         let tableBody
         const PAGE_SIZE = 100;
         
@@ -338,6 +449,46 @@
         let pagination;
         let paginationBottom;
         let contracts;
+        async function fetchBridges(network = 'ethereum') {
+            loadingRow = document.getElementById('loadingRow');
+            tableBody = document.getElementById('contractsTableBody');
+            pagination = document.getElementById('paginationButtons');
+            paginationBottom = document.getElementById('paginationButtonsBottom');
+
+            if (loadingRow) {
+                loadingRow.style.display = '';
+                tableBody.innerHTML = '';
+                tableBody.appendChild(loadingRow);
+            }
+
+            pagination.innerHTML = '';
+            paginationBottom.innerHTML = '';
+
+            try {
+                const response = await fetch(server+`/getBridge?network=${network}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                bridges = data.result;
+                applyFilters();
+
+                if (loadingRow) loadingRow.style.display = 'none';
+                renderTablePage(currentPage);
+                renderPagination();
+            } catch (error) {
+                console.error('Error fetching bridges:', error);
+                if (loadingRow) loadingRow.style.display = 'none';
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-red-500">
+                            Failed to load bridges data. Please try again later.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
         async function fetchContracts(network = 'ethereum') {
             loadingRow = document.getElementById('loadingRow');
             tableBody = document.getElementById('contractsTableBody');
@@ -360,11 +511,15 @@
             if (loadingRow) loadingRow.style.display = 'none';
             renderTablePage(currentPage);
             renderPagination();
+         }
 
-        }
-
-        function applyFilters() {
-            filteredContracts = [...contracts];
+         function applyFilters() {
+            const sourceData = activeView === 'contracts' ? contracts : bridges;
+            if( activeView === 'contracts' ){
+                filteredContracts = [...sourceData];
+            }else{
+                filteredBridges = [...sourceData]
+            }
 
             if (hideUnnamed) {
                 filteredContracts = filteredContracts.filter(c => c.contract_name && c.contract_name.trim() !== "");
@@ -400,12 +555,12 @@
 
             return btn;
         }
-    
+        
         function renderTablePage(page) {
             tableBody.innerHTML = '';
             const start = (page - 1) * PAGE_SIZE;
             const end = page * PAGE_SIZE;
-            const currentData = filteredContracts.slice(start, end);
+            const currentData = (activeView === 'contracts' ? filteredContracts : filteredBridges).slice(start, end);
 
             currentData.forEach((contract, index) => {
                 const row = document.createElement('tr');
@@ -458,16 +613,20 @@
                             <i class="fas fa-external-link-alt"></i>
                         </button>
                     </td>
-
-                `;
+                 `;
                 tableBody.appendChild(row);
             });
 
-            updateStats(filteredContracts);
+            // updateStats(currentData);
+            if (activeView === 'contracts') {
+                updateStats(filteredContracts);
+            }
         }
 
         function renderPagination() {
-            const totalPages = Math.ceil(filteredContracts.length / PAGE_SIZE);
+            const currentData = activeView === 'contracts' ? filteredContracts : filteredBridges
+
+            const totalPages = Math.ceil(currentData.length / PAGE_SIZE);
             pagination.innerHTML = '';
             paginationBottom.innerHTML = '';
 
@@ -487,24 +646,39 @@
                 sortState.ascending = true;
             }
 
-            filteredContracts.sort((a, b) => {
-                const aVal = a[columnKey] || '';
-                const bVal = b[columnKey] || '';
+            if(activeView === 'contracts' ){
+                filteredContracts.sort((a, b) => {
+                    const aVal = a[columnKey] || '';
+                    const bVal = b[columnKey] || '';
 
-                if (typeof aVal === 'number' && typeof bVal === 'number') {
-                    return sortState.ascending ? aVal - bVal : bVal - aVal;
-                } else {
-                    return sortState.ascending
-                        ? aVal.toString().localeCompare(bVal.toString())
-                        : bVal.toString().localeCompare(aVal.toString());
-                }
-            });
+                    if (typeof aVal === 'number' && typeof bVal === 'number') {
+                        return sortState.ascending ? aVal - bVal : bVal - aVal;
+                    } else {
+                        return sortState.ascending
+                            ? aVal.toString().localeCompare(bVal.toString())
+                            : bVal.toString().localeCompare(aVal.toString());
+                    }
+                });
+            }else{
+                filteredBridges.sort((a, b) => {
+                    const aVal = a[columnKey] || '';
+                    const bVal = b[columnKey] || '';
+
+                    if (typeof aVal === 'number' && typeof bVal === 'number') {
+                        return sortState.ascending ? aVal - bVal : bVal - aVal;
+                    } else {
+                        return sortState.ascending
+                            ? aVal.toString().localeCompare(bVal.toString())
+                            : bVal.toString().localeCompare(aVal.toString());
+                    }
+                });
+            }
 
             updateSortIcons(); // 아이콘 업데이트
             renderTablePage(currentPage);
             renderPagination();
         }
-    
+        
         function updateSortIcons() {
             const columns = ['address', 'contract_name', 'deployed', 'first_seen'];
             columns.forEach(col => {
@@ -543,22 +717,22 @@
 
         function timeAgo(date) {
             const seconds = Math.floor((new Date() - date) / 1000);
-            
+                    
             let interval = Math.floor(seconds / 31536000);
             if (interval >= 1) return interval + " year" + (interval === 1 ? "" : "s") + " ago";
-            
+                    
             interval = Math.floor(seconds / 2592000);
             if (interval >= 1) return interval + " month" + (interval === 1 ? "" : "s") + " ago";
-            
+                    
             interval = Math.floor(seconds / 86400);
             if (interval >= 1) return interval + " day" + (interval === 1 ? "" : "s") + " ago";
-            
+                    
             interval = Math.floor(seconds / 3600);
             if (interval >= 1) return interval + " hour" + (interval === 1 ? "" : "s") + " ago";
-            
+                    
             interval = Math.floor(seconds / 60);
             if (interval >= 1) return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
-            
+                    
             return Math.floor(seconds) + " second" + (seconds === 1 ? "" : "s") + " ago";
         }
     </script>
