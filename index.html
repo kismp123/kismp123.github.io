@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4PCM4RZWE"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      
-      gtag('config', 'G-E4PCM4RZWE');
-    </script>
+  <!-- GA4 (직접 gtag 사용) — GTM에서 GA4 태그를 쓰면 아래 gtag.js는 제거하세요(중복 방지) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4PCM4RZWE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-E4PCM4RZWE'); /* page_view 자동 전송 */
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BugChain.xyz</title>
@@ -33,19 +33,21 @@
     ::-webkit-scrollbar-thumb:hover{background:#64748B}
     .infinity-symbol{font-size:1.2em;line-height:1;vertical-align:middle}
   </style>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-WCWG4KF7');</script>
-    <!-- End Google Tag Manager -->
+
+  <!-- Google Tag Manager (원하시면 GA4만 유지하고 GTM 제거 가능) -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WCWG4KF7');</script>
+  <!-- End Google Tag Manager -->
 </head>
 <body class="min-h-screen bg-slate-900 text-white">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WCWG4KF7"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+  <!-- GTM noscript -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WCWG4KF7"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End GTM noscript -->
+
   <!-- Header -->
   <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -117,13 +119,13 @@
                   <span>Min: 1h</span><span>Max: <span class="infinity-symbol">∞</span></span>
                 </div>
                 <div id="time-slider-container" class="relative h-2 bg-slate-600 rounded-lg">
-                    <!-- Time -->
-                    <input id="time-min" class="absolute w-full h-2 opacity-0 z-10 pointer-events-none" type="range" min="0" max="12" value="0"/>
-                    <input id="time-max" class="absolute w-full h-2 opacity-0 z-10 pointer-events-none" type="range" min="0" max="12" value="12"/>
+                  <!-- Time -->
+                  <input id="time-min" class="absolute w-full h-2 opacity-0 z-10 pointer-events-none" type="range" min="0" max="12" value="0"/>
+                  <input id="time-max" class="absolute w-full h-2 opacity-0 z-10 pointer-events-none" type="range" min="0" max="12" value="12"/>
 
-                    <div id="time-range-track" class="absolute h-2 bg-blue-500 rounded-lg"></div>
-                    <div id="time-min-thumb" class="absolute h-4 w-4 bg-blue-500 rounded-full -mt-1 z-20 cursor-pointer hover:bg-blue-400"></div>
-                    <div id="time-max-thumb" class="absolute h-4 w-4 bg-blue-500 rounded-full -mt-1 z-20 cursor-pointer hover:bg-blue-400"></div>
+                  <div id="time-range-track" class="absolute h-2 bg-blue-500 rounded-lg"></div>
+                  <div id="time-min-thumb" class="absolute h-4 w-4 bg-blue-500 rounded-full -mt-1 z-20 cursor-pointer hover:bg-blue-400"></div>
+                  <div id="time-max-thumb" class="absolute h-4 w-4 bg-blue-500 rounded-full -mt-1 z-20 cursor-pointer hover:bg-blue-400"></div>
                 </div>
               </div>
             </div>
@@ -141,12 +143,12 @@
                   <span>Min: $0</span><span>Max: <span class="infinity-symbol">∞</span></span>
                 </div>
                 <div id="fund-slider-container" class="relative h-2 bg-slate-600 rounded-lg">
-                    <!-- Fund -->
-                    <input id="fund-min" class="absolute w-full h-2 opacity-0 z-10 pointer-events-none" type="range" min="0" max="10000000" value="0"/>
-                    <input id="fund-max" class="absolute w-full h-2 opacity-0 z-10 pointer-events-none" type="range" min="0" max="10000000" value="10000000"/>
-                    <div id="fund-range-track" class="absolute h-2 bg-blue-500 rounded-lg"></div>
-                    <div id="fund-min-thumb" class="absolute h-4 w-4 bg-blue-500 rounded-full -mt-1 z-20 cursor-pointer hover:bg-blue-400"></div>
-                     <div id="fund-max-thumb" class="absolute h-4 w-4 bg-blue-500 rounded-full -mt-1 z-20 cursor-pointer hover:bg-blue-400"></div>
+                  <!-- Fund -->
+                  <input id="fund-min" class="absolute w-full h-2 opacity-0 z-10 pointer-events-none" type="range" min="0" max="10000000" value="0"/>
+                  <input id="fund-max" class="absolute w-full h-2 opacity-0 z-10 pointer-events-none" type="range" min="0" max="10000000" value="10000000"/>
+                  <div id="fund-range-track" class="absolute h-2 bg-blue-500 rounded-lg"></div>
+                  <div id="fund-min-thumb" class="absolute h-4 w-4 bg-blue-500 rounded-full -mt-1 z-20 cursor-pointer hover:bg-blue-400"></div>
+                  <div id="fund-max-thumb" class="absolute h-4 w-4 bg-blue-500 rounded-full -mt-1 z-20 cursor-pointer hover:bg-blue-400"></div>
                 </div>
               </div>
             </div>
@@ -192,6 +194,25 @@
   </main>
 
   <script>
+    // =========================
+    // GA4 Helper & Debounce
+    // =========================
+    const gaEvent = (name, params = {}) => {
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', name, params);
+        } else if (window.dataLayer) {
+          // GTM만 있을 때 안전하게 dataLayer로 푸시
+          window.dataLayer.push({ event: name, ...params });
+        }
+      } catch (e) {
+        console.warn('GA event failed', name, params, e);
+      }
+    };
+    const debounce = (fn, wait = 500) => {
+      let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
+    };
+
     // Initialize Lucide icons
     lucide.createIcons();
 
@@ -201,7 +222,7 @@
       6:'1m', 7:'2m', 8:'3m',
       9:'6m', 10:'1y', 11:'2y', 12:'∞'
     };
-  
+
     // Selected filters
     let filters = { address:'', name:'', timeMin:0, timeMax:12, fundMin:0, fundMax:10000000, networks:[] };
 
@@ -222,46 +243,77 @@
     const toggleFiltersBtn=document.getElementById('toggle-filters');
     const filtersPanel=document.getElementById('filters-panel');
 
+    // Build common GA params snapshot
+    const currentFilterParams = () => ({
+      address_query: filters.address || null,
+      name_query: filters.name || null,
+      time_min_index: filters.timeMin,
+      time_max_index: filters.timeMax,
+      time_min_label: timeRanges[filters.timeMin],
+      time_max_label: timeRanges[filters.timeMax],
+      fund_min: filters.fundMin,
+      fund_max: (filters.fundMax >= 10000000) ? null : filters.fundMax,
+      networks: (filters.networks && filters.networks.length) ? filters.networks.join(',') : 'all'
+    });
+
     // Mobile Filters Toggle
     if (toggleFiltersBtn) {
       filtersPanel.classList.add('hidden','sm:block'); // mobile hidden, >=sm block
       toggleFiltersBtn.addEventListener('click',()=>{
+        const willShow = filtersPanel.classList.contains('hidden');
         filtersPanel.classList.toggle('hidden');
+        gaEvent('toggle_filters', { visible: willShow });
       });
     }
 
+    // ===== Inputs → GA (debounced) =====
+    const fireFilterChange = debounce((name, extra = {}) => {
+      gaEvent('filter_change', { filter_name: name, ...currentFilterParams(), ...extra });
+    }, 600);
+
     // Events
-    addressSearch.addEventListener('input',e=>{filters.address=e.target.value;});
-    nameSearch.addEventListener('input',e=>{filters.name=e.target.value;});
-    timeMin.addEventListener('input',e=>{filters.timeMin=parseInt(e.target.value);updateTimeRangeDisplay();});
-    timeMax.addEventListener('input',e=>{filters.timeMax=parseInt(e.target.value);updateTimeRangeDisplay();});
+    addressSearch.addEventListener('input',e=>{
+      filters.address=e.target.value;
+      fireFilterChange('address', { value_length: (e.target.value||'').length });
+    });
+    nameSearch.addEventListener('input',e=>{
+      filters.name=e.target.value;
+      fireFilterChange('name', { value_length: (e.target.value||'').length });
+    });
+    timeMin.addEventListener('input',e=>{
+      filters.timeMin=parseInt(e.target.value);
+      updateTimeRangeDisplay();
+      fireFilterChange('time_min', { index: filters.timeMin, label: timeRanges[filters.timeMin] });
+    });
+    timeMax.addEventListener('input',e=>{
+      filters.timeMax=parseInt(e.target.value);
+      updateTimeRangeDisplay();
+      fireFilterChange('time_max', { index: filters.timeMax, label: timeRanges[filters.timeMax] });
+    });
 
     // fundMin / fundMax 입력 이벤트 (스냅 + 클램프)
     fundMin.addEventListener('input', (e) => {
-    let raw = parseInt(e.target.value) || 0;
-    const step = fundStepFor(raw);
-    let snapped = Math.round(raw / step) * step;
-
-    // fundMin은 fundMax를 넘지 않도록
-    if (snapped > filters.fundMax) snapped = filters.fundMax;
-
-    e.target.value = snapped;
-    filters.fundMin = snapped;
-    updateFundRangeDisplay();
+      let raw = parseInt(e.target.value) || 0;
+      const step = fundStepFor(raw);
+      let snapped = Math.round(raw / step) * step;
+      if (snapped > filters.fundMax) snapped = filters.fundMax;
+      e.target.value = snapped;
+      filters.fundMin = snapped;
+      updateFundRangeDisplay();
+      fireFilterChange('fund_min', { value: filters.fundMin });
     });
 
     fundMax.addEventListener('input', (e) => {
-    let raw = parseInt(e.target.value) || 0;
-    const step = fundStepFor(raw);
-    let snapped = Math.round(raw / step) * step;
-
-    // fundMax는 fundMin보다 작아지지 않도록
-    if (snapped < filters.fundMin) snapped = filters.fundMin;
-
-    e.target.value = snapped;
-    filters.fundMax = snapped;
-    updateFundRangeDisplay();
+      let raw = parseInt(e.target.value) || 0;
+      const step = fundStepFor(raw);
+      let snapped = Math.round(raw / step) * step;
+      if (snapped < filters.fundMin) snapped = filters.fundMin;
+      e.target.value = snapped;
+      filters.fundMax = snapped;
+      updateFundRangeDisplay();
+      fireFilterChange('fund_max', { value: filters.fundMax });
     });
+
     networkButtons.forEach(btn=>{
       btn.addEventListener('click',e=>{
         const n=e.target.dataset.network;
@@ -269,16 +321,27 @@
           filters.networks=filters.networks.filter(x=>x!==n);
           e.target.classList.remove('bg-blue-600','text-white');
           e.target.classList.add('bg-slate-700','text-slate-300');
+          gaEvent('select_network', { network: n, selected: false, selected_networks: filters.networks.join(',') || 'none' });
         } else {
           filters.networks.push(n);
           e.target.classList.remove('bg-slate-700','text-slate-300');
           e.target.classList.add('bg-blue-600','text-white');
+          gaEvent('select_network', { network: n, selected: true, selected_networks: filters.networks.join(',') });
         }
       })
     });
 
-    searchButton.addEventListener('click',searchContracts);
-    clearFiltersButton.addEventListener('click',clearFilters);
+    searchButton.addEventListener('click',()=>{
+      gaEvent('search', {
+        search_term: (filters.address || filters.name || '(filters only)'),
+        ...currentFilterParams()
+      });
+      searchContracts();
+    });
+    clearFiltersButton.addEventListener('click',()=>{
+      gaEvent('filter_reset', { ...currentFilterParams() });
+      clearFilters();
+    });
 
     // Slider visuals
     const timeMinThumb=document.getElementById('time-min-thumb');
@@ -290,15 +353,15 @@
 
     // 값이 클수록 스텝을 키움
     function fundStepFor(val) {
-        if (val < 1_000_000) return 20_000;     // < 1M  → 20K
-        if (val < 2_000_000) return 200_000;    // < 2M  → 200K
-        if (val < 3_000_000) return 500_000;    // < 5M  → 500K
-        return 1_000_000;                       // ≥ 5M  → 1M
+      if (val < 1_000_000) return 20_000;     // < 1M  → 20K
+      if (val < 2_000_000) return 200_000;    // < 2M  → 200K
+      if (val < 3_000_000) return 500_000;    // < 5M  → 500K
+      return 1_000_000;                       // ≥ 5M  → 1M
     }
 
     function updateSliderPositions(){
       // time
-      const tMaxIndex = parseInt(timeMin.max, 10); // ← 동적으로 최대 인덱스 사용
+      const tMaxIndex = parseInt(timeMin.max, 10);
       const tMin = (filters.timeMin / tMaxIndex) * 100;
       const tMax = (filters.timeMax / tMaxIndex) * 100;
       timeMinThumb.style.left = `${tMin}%`;
@@ -306,7 +369,7 @@
       timeRangeTrack.style.left = `${tMin}%`;
       timeRangeTrack.style.width = `${tMax - tMin}%`;
 
-      // fund (기존 그대로)
+      // fund
       const fMin = (filters.fundMin/10000000)*100, fMax=(filters.fundMax/10000000)*100;
       fundMinThumb.style.left=`${fMin}%`; fundMaxThumb.style.left=`${fMax}%`;
       fundRangeTrack.style.left=`${fMin}%`; fundRangeTrack.style.width=`${fMax-fMin}%`;
@@ -355,14 +418,14 @@
         default: return Infinity;
       }
     }
-  
-    // Render
+
+    // ===== Results render + GA =====
     function renderResults(rows){
       if (!rows || rows.length===0){ showEmptyState(); return; }
 
       // counts (totalCount/totalPages 가 있다면 외부에서 세팅됨)
       if (typeof totalCount!=='undefined' && totalCount!=null){
-        contractCount.textContent=`Total Contracts: ${totalCount}` + (totalPages?` (pages: ${totalPages})`:'');
+        contractCount.textContent=`Total Contracts: ${totalCount}` + (totalPages?` (pages: ${totalPages})`:``);
       } else {
         contractCount.textContent=`Contracts (this page): ${rows.length}`;
       }
@@ -390,8 +453,17 @@
       const tableRows=rows.map(r=>{
         const short=r.address?`${r.address.slice(0,6)}...${r.address.slice(-6)}`:'';
         const base=explorerMap[r.network?.toLowerCase()];
-        const link=base
-          ? `<a href="${base}${r.address}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">${short}</a>`
+        const href = base ? `${base}${r.address}` : '#';
+        const link = base
+          ? `<a href="${href}" target="_blank" rel="noopener noreferrer"
+                class="text-blue-400 hover:underline"
+                data-ga-item="explorer-link"
+                data-ui="table"
+                data-address="${r.address||''}"
+                data-name="${(r.contract_name||'').replace(/"/g,'&quot;')}"
+                data-network="${r.network||''}"
+                data-fund="${r.fund||''}"
+             >${short}</a>`
           : `<span class="text-slate-300">${short}</span>`;
         const netColor=networkColors[r.network?.toLowerCase()]||'bg-slate-600';
         const badge=r.network?`<span class="px-2 py-1 rounded-full text-xs font-medium text-white ${netColor}">${r.network}</span>`:'';
@@ -418,7 +490,14 @@
           <div class="p-4 rounded-xl border border-slate-700 bg-slate-800 shadow-sm">
             <div class="flex items-center justify-between gap-3">
               <a href="${link}" target="_blank" rel="noopener noreferrer"
-                 class="font-mono text-xs text-blue-400 hover:underline break-all">${short}</a>
+                 class="font-mono text-xs text-blue-400 hover:underline break-all"
+                 data-ga-item="explorer-link"
+                 data-ui="card"
+                 data-address="${full}"
+                 data-name="${(r.contract_name||'').replace(/"/g,'&quot;')}"
+                 data-network="${r.network||''}"
+                 data-fund="${r.fund||''}"
+              >${short}</a>
               ${r.network?`<span class="px-2 py-1 rounded-full text-xs font-medium text-white ${netColor}">${r.network}</span>`:''}
             </div>
             <div class="mt-2 text-sm text-slate-200 truncate">${r.contract_name ?? ''}</div>
@@ -459,6 +538,32 @@
           </div>
         </div>`;
       lucide.createIcons();
+
+      // GA: 결과 노출 이벤트 (표준)
+      const page_index = (cursorStack?.length || 0) + 1;
+      gaEvent('view_search_results', {
+        search_term: (filters.address || filters.name || '(filters only)'),
+        results_count: rows.length,
+        page_index,
+        page_size: pageLimit,
+        total_count: (totalCount!=null ? totalCount : null),
+        ...currentFilterParams()
+      });
+
+      // GA: 익스플로러 링크 클릭 추적
+      resultsSection.querySelectorAll('a[data-ga-item="explorer-link"]').forEach(a=>{
+        a.addEventListener('click', (e) => {
+          const el = e.currentTarget;
+          gaEvent('select_item', {
+            item_id: el.dataset.address || '',
+            item_name: el.dataset.name || '',
+            item_category: 'contract',
+            item_list_name: el.dataset.network || '',
+            item_variant: el.dataset.ui || '',
+            link_url: el.href
+          });
+        });
+      });
     }
 
     const server='https://api.bugchain.xyz';
@@ -469,7 +574,7 @@
     let pageLimit=50, cursorStack=[], currentCursor=null, nextCursorFromLastResult=null;
     let totalCount=null,totalPages=null;
 
-    // simple pager container (render elsewhere if 이미 있으시면 그대로 유지)
+    // simple pager container
     let pagerEl=document.getElementById('pager');
     if(!pagerEl){
       pagerEl=document.createElement('div');
@@ -491,8 +596,20 @@
       const nextBtn=document.getElementById('next-page');
       prevBtn.disabled=cursorStack.length===0;
       nextBtn.disabled=!nextCursorFromLastResult;
-      prevBtn.onclick=async()=>{ if(cursorStack.length===0)return; currentCursor=cursorStack.pop()||null; await searchContracts({useExistingCursor:true}); };
-      nextBtn.onclick=async()=>{ if(!nextCursorFromLastResult)return; cursorStack.push(currentCursor); currentCursor=nextCursorFromLastResult; await searchContracts({useExistingCursor:true}); };
+
+      prevBtn.onclick=async()=>{
+        if(cursorStack.length===0)return;
+        gaEvent('paginate_results', { direction:'prev', from_page:(cursorStack.length+1) });
+        currentCursor=cursorStack.pop()||null;
+        await searchContracts({useExistingCursor:true});
+      };
+      nextBtn.onclick=async()=>{
+        if(!nextCursorFromLastResult)return;
+        gaEvent('paginate_results', { direction:'next', from_page:(cursorStack.length+1) });
+        cursorStack.push(currentCursor);
+        currentCursor=nextCursorFromLastResult;
+        await searchContracts({useExistingCursor:true});
+      };
     }
 
     async function searchContracts(opts={}){
@@ -557,60 +674,77 @@
         </div>`;
       lucide.createIcons();
       contractCount.textContent='Total Contracts: 0';
+
+      // 빈 결과 노출도 이벤트로 남김(편의상)
+      gaEvent('view_search_results', {
+        search_term: (filters.address || filters.name || '(filters only)'),
+        results_count: 0,
+        page_index: (cursorStack?.length || 0) + 1,
+        page_size: pageLimit,
+        total_count: (totalCount!=null ? totalCount : null),
+        ...currentFilterParams()
+      });
     }
+
+    // 커스텀 드래그 핸들 (기존 유지)
     function setupThumbDrag(thumb, sliderContainer, input, isMin){
-        let isDragging = false;
+      let isDragging = false;
 
-        const onPointerMove = (clientX) => {
-            const rect = sliderContainer.getBoundingClientRect();
-            let pos = (clientX - rect.left) / rect.width;
-            pos = Math.max(0, Math.min(1, pos));
-            const maxPos = parseInt(input.max), minPos = parseInt(input.min);
-            const value = Math.round(pos * (maxPos - minPos) + minPos);
+      const onPointerMove = (clientX) => {
+        const rect = sliderContainer.getBoundingClientRect();
+        let pos = (clientX - rect.left) / rect.width;
+        pos = Math.max(0, Math.min(1, pos));
+        const maxPos = parseInt(input.max), minPos = parseInt(input.min);
+        const value = Math.round(pos * (maxPos - minPos) + minPos);
 
-            if (isMin) {
-            const other = input.id.includes('time') ? timeMax : fundMax;
-            input.value = Math.min(value, parseInt(other.value));
-            } else {
-            const other = input.id.includes('time') ? timeMin : fundMin;
-            input.value = Math.max(value, parseInt(other.value));
-            }
-            input.dispatchEvent(new Event('input'));
-        };
+        if (isMin) {
+          const other = input.id.includes('time') ? timeMax : fundMax;
+          input.value = Math.min(value, parseInt(other.value));
+        } else {
+          const other = input.id.includes('time') ? timeMin : fundMin;
+          input.value = Math.max(value, parseInt(other.value));
+        }
+        input.dispatchEvent(new Event('input'));
+      };
 
-        const onMouseMove = (e) => onPointerMove(e.clientX);
-        const onTouchMove = (e) => {
-            if (!e.touches || !e.touches[0]) return;
-            onPointerMove(e.touches[0].clientX);
-        };
+      const onMouseMove = (e) => onPointerMove(e.clientX);
+      const onTouchMove = (e) => {
+        if (!e.touches || !e.touches[0]) return;
+        onPointerMove(e.touches[0].clientX);
+      };
 
-        const stop = () => {
-            isDragging = false;
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', stop);
-            document.removeEventListener('touchmove', onTouchMove);
-            document.removeEventListener('touchend', stop);
-            document.removeEventListener('touchcancel', stop);
-        };
+      const stop = () => {
+        isDragging = false;
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', stop);
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', stop);
+        document.removeEventListener('touchcancel', stop);
+        // 드래그 종료 시점에 한번만 필터 변경 이벤트 발행
+        if (input.id.includes('time')) {
+          gaEvent('filter_change', { filter_name: 'time_range', ...currentFilterParams() });
+        } else {
+          gaEvent('filter_change', { filter_name: 'fund_range', ...currentFilterParams() });
+        }
+      };
 
-        const start = (clientX) => {
-            isDragging = true;
-            onPointerMove(clientX);
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', stop);
-            document.addEventListener('touchmove', onTouchMove, { passive: false });
-            document.addEventListener('touchend', stop);
-            document.addEventListener('touchcancel', stop);
-        };
+      const start = (clientX) => {
+        isDragging = true;
+        onPointerMove(clientX);
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', stop);
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', stop);
+        document.addEventListener('touchcancel', stop);
+      };
 
-        thumb.addEventListener('mousedown', (e) => { e.preventDefault(); start(e.clientX); });
-        thumb.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            const x = (e.touches && e.touches[0]) ? e.touches[0].clientX : null;
-            if (x != null) start(x);
-        }, { passive: false });
+      thumb.addEventListener('mousedown', (e) => { e.preventDefault(); start(e.clientX); });
+      thumb.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const x = (e.touches && e.touches[0]) ? e.touches[0].clientX : null;
+        if (x != null) start(x);
+      }, { passive: false });
     }
-
 
     setupThumbDrag(timeMinThumb,document.getElementById('time-slider-container'),timeMin,true);
     setupThumbDrag(timeMaxThumb,document.getElementById('time-slider-container'),timeMax,false);
@@ -621,8 +755,16 @@
     updateTimeRangeDisplay();
     updateFundRangeDisplay();
     updateSliderPositions();
+
+    // Footer social link clicks → GA
+    document.querySelectorAll('a[aria-label="Twitter"], a[aria-label="LinkedIn"]').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        const label = a.getAttribute('aria-label') || 'social';
+        gaEvent('social_click', { platform: label, link_url: a.href });
+      });
+    });
   </script>
-</body>
+
   <!-- Footer: put this right after </main> and before </body> -->
   <footer class="border-t border-slate-700 bg-slate-800/70">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -664,12 +806,12 @@
 
   <script>
     // 연도 자동 갱신
-    (function(){ 
-      const y = document.getElementById('year'); 
-      if (y) y.textContent = new Date().getFullYear(); 
+    (function(){
+      const y = document.getElementById('year');
+      if (y) y.textContent = new Date().getFullYear();
     })();
-    // 아이콘 다시 그리기 (이미 호출되어 있어도 안전)
     if (window.lucide?.createIcons) lucide.createIcons();
   </script>
 
+</body>
 </html>
