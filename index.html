@@ -1224,7 +1224,12 @@ const networkButtons=document.querySelectorAll('#network-buttons button[data-net
 
         const rows=Array.isArray(json?.data)?json.data:(Array.isArray(json)?json:[]);
         nextCursorFromLastResult=json?.nextCursor ?? null;
-        if(json?.totalCount!=null){ totalCount=Number(json.totalCount); totalPages=json?.totalPages!=null?Number(json.totalPages):null; }
+
+        // Always update totalCount when server provides it
+        if(json?.totalCount!=null){
+          totalCount=Number(json.totalCount);
+          totalPages=json?.totalPages!=null?Number(json.totalPages):null;
+        }
 
         if(rows.length===0){ showEmptyState(); renderPager(); return; }
         renderResults(rows); renderPager();
